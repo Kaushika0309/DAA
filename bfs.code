@@ -1,0 +1,72 @@
+#include <stdio.h>
+#include <stdbool.h>
+
+#define MAX 20
+
+// Queue for BFS
+int queue[MAX];
+int front = -1, rear = -1;
+
+void enqueue(int v) {
+    if (rear == MAX - 1) return;
+    if (front == -1) front = 0;
+    queue[++rear] = v;
+}
+
+int dequeue() {
+    if (front == -1 || front > rear) return -1;
+    return queue[front++];
+}
+
+bool isQueueEmpty() {
+    return front == -1 || front > rear;
+}
+
+void bfs(int adj[MAX][MAX], int n, int start) {
+    bool visited[MAX] = {false};
+    
+    visited[start] = true;
+    enqueue(start);
+
+    printf("\nBFS Traversal starting from %d: ", start);
+
+    while (!isQueueEmpty()) {
+        int curr = dequeue();
+        printf("%d ", curr);
+
+        for (int i = 0; i < n; i++) {
+            // Check for edge and unvisited status
+            if (adj[curr][i] == 1 && !visited[i]) {
+                visited[i] = true;
+                enqueue(i);
+            }
+        }
+    }
+    printf("\n");
+}
+
+int main() {
+    int n, edges, u, v, startNode;
+    int adj[MAX][MAX] = {0};
+
+    printf("Enter number of vertices: ");
+    scanf("%d", &n);
+
+    printf("Enter number of edges: ");
+    scanf("%d", &edges);
+
+    printf("Enter edges (source destination) for each:\n");
+    for (int i = 0; i < edges; i++) {
+        scanf("%d %d", &u, &v);
+        // For undirected graph, we mark both directions
+        adj[u][v] = 1;
+        adj[v][u] = 1; 
+    }
+
+    printf("Enter the starting vertex: ");
+    scanf("%d", &startNode);
+
+    bfs(adj, n, startNode);
+
+    return 0;
+}
